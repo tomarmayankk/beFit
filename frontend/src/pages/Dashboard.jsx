@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNutritionStore } from '../store/useNutritionStore';
 
 const Dashboard = () => {
   const { authUser } = useAuthStore();
-  const { dailyIntake, updateIntake, isLoading } = useNutritionStore();
+  const { dailyIntake, updateIntake, fetchIntake, isLoading } = useNutritionStore();
 
   const [form, setForm] = useState({
     calories: '',
     protein: '',
     carbs: ''
   });
+
+  // Fetch intake data when component mounts
+  useEffect(() => {
+    fetchIntake();
+  }, []);
 
   // Calculate daily goals based on bodyweight (kg)
   const bodyweight = authUser?.bodyweight || 0;

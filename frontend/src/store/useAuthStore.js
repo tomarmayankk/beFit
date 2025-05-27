@@ -19,37 +19,40 @@ export const useAuthStore = create((set) => ({
       set({ isCheckingAuth: false });
     }
   },
-      signin: async (data) => {
-        set({isSigningIn: true})
-        try {
-            const res = await axiosInstance.post('/auth/signin', data)
-            set({authUser: res.data})
-            toast.success("loggeg in sucessfully")
-        } catch (error) {
-            toast.error(error.response.data.message)
-        } finally{
-            set({isSigningIn: false})
-        }
-    },
-    signup: async (data) => {
-        set({isSigningUp: true})
-        try {
-            const res = await axiosInstance.post('/auth/signup', data)
-            set({authUser: res.data})
-            toast.success("account created successfully")
-        } catch (error) {
-            toast.error(error.response.data.message)
-        }finally {
-            set({isSigningUp: false});
-        }
-    },
-        signout: async (data) => {
-        try {
-            await axiosInstance.post("/auth/signout")
-            set({authUser: null});
-            toast.success("logged out")
-        } catch (error) {
-            toast.error(error.response.data.message);
-        }
+
+  signin: async (data) => {
+    set({ isSigningIn: true });
+    try {
+      const res = await axiosInstance.post('/auth/signin', data);
+      set({ authUser: res.data });
+      toast.success("Logged in successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Sign in failed");
+    } finally {
+      set({ isSigningIn: false });
     }
+  },
+
+  signup: async (data) => {
+    set({ isSigningUp: true });
+    try {
+      const res = await axiosInstance.post('/auth/signup', data);
+      set({ authUser: res.data });
+      toast.success("Account created successfully");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Sign up failed");
+    } finally {
+      set({ isSigningUp: false });
+    }
+  },
+
+  signout: async () => {
+    try {
+      await axiosInstance.post("/auth/signout");
+      set({ authUser: null });
+      toast.success("Logged out");
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Sign out failed");
+    }
+  }
 }));

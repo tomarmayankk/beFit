@@ -18,7 +18,19 @@ export const useNutritionStore = create((set) => ({
       set({ dailyIntake: res.data.dailyIntake });
       toast.success('Daily intake updated!');
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to update intake.");
+      toast.error(error?.response?.data?.message || "Failed to update intake.");
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  fetchIntake: async () => {
+    set({ isLoading: true });
+    try {
+      const res = await axiosInstance.get('/dashboard/get-intake'); // 🟢 using original route
+      set({ dailyIntake: res.data.dailyIntake });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to fetch intake.");
     } finally {
       set({ isLoading: false });
     }

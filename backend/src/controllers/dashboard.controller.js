@@ -44,10 +44,10 @@ export const getTodayIntake = async (req, res) => {
     const today = new Date().toDateString();
 
     if (!user.dailyIntake || user.dailyIntake.date !== today) {
-      return res.status(200).json({ calories: 0, protein: 0, carbs: 0 });
+      return res.status(200).json({ dailyIntake: { calories: 0, protein: 0, carbs: 0 } });
     }
 
-    res.status(200).json(user.dailyIntake);
+    res.status(200).json({ dailyIntake: user.dailyIntake });
   } catch (error) {
     console.error("Error fetching intake:", error.message);
     res.status(500).json({ message: "Internal server error" });
