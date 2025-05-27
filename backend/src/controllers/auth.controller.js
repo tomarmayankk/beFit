@@ -15,9 +15,21 @@ export const signup = async (req, res) => {
   } = req.body;
 
   try {
+    // Check required fields
+    if (!fullName || !email || !password || !age || !gender || !height || !bodyweight) {
+      return res.status(400).json({ message: "Please fill all required fields" });
+    }
+
     // Password length check
     if (password.length < 6) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    // Validate height and weight
+    const numericHeight = parseFloat(height);
+    const numericWeight = parseFloat(bodyweight);
+    if (isNaN(numericHeight) || isNaN(numericWeight) || numericHeight <= 0) {
+      return res.status(400).json({ message: "Invalid height or bodyweight" });
     }
 
     // Check if user already exists
@@ -31,7 +43,7 @@ export const signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Calculate BMI
-    const bmi = bodyweight / ((height / 100) ** 2); // height in cm
+    const bmi = numericWeight / ((numericHeight / 100) ** 2);
 
     // Create new user
     const newUser = new User({
@@ -40,9 +52,9 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       age,
       gender,
-      height,
-      bodyweight,
-      bmi: parseFloat(bmi.toFixed(2)) // optional: limit to 2 decimal places
+      height: numericHeight,
+      bodyweight: numericWeight,
+      bmi: parseFloat(bmi.toFixed(2))
     });
 
     await newUser.save();
@@ -67,6 +79,7 @@ export const signup = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // Signin controller function
 export const signin = async (req, res) => {
@@ -106,14 +119,15 @@ export const signin = async (req, res) => {
   }
 };
 
-export const signout = (req, res) => {
-  res.cookie('token', '', {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-
-  res.status(200).json({ message: 'Signed out successfully' });
-};
+export const signout =  (req, res) => {
+    try {
+        res.cookie("jwt", "", {maxAge: 0})
+        res.status(200).json({message: "logged out successfully"})
+    } catch (error) {
+        console.log("error in signout controller", error.message);
+        res.status(500).json({message: "internal server error"})
+    }
+}
 
 export const checkAuth =  (req, res) => {
     try {

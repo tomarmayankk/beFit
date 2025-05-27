@@ -1,237 +1,181 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useAuthStore } from '../store/useAuthStore'
-import { Loader } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { Loader } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 const SignupPage = () => {
-  const { signup, isSigningUp } = useAuthStore()
-
+  const { signup, isSigningUp } = useAuthStore();
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    password: "",
-    gender: "",
-    bodyWeight: "",
-    height: "",  // New height field
-  })
+    fullName: '',
+    email: '',
+    password: '',
+    age: '',
+    gender: '',
+    height: '',
+    bodyweight: '',
+  });
 
   const validateForm = () => {
     if (!formData.fullName.trim()) {
-      toast.error("Please enter a full name")
-      return false
+      toast.error("Name is required");
+      return false;
     }
     if (
       !formData.email.trim() ||
       !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
     ) {
-      toast.error("Please enter a valid email address")
-      return false
+      toast.error("Please enter a valid email");
+      return false;
     }
-    if (!formData.password.trim() || formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters long")
-      return false
+    if (!formData.password || formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    if (!formData.age || isNaN(formData.age)) {
+      toast.error("Please enter a valid age");
+      return false;
+    }
+    if (!formData.height || isNaN(formData.height)) {
+      toast.error("Please enter a valid height");
+      return false;
+    }
+    if (!formData.bodyweight || isNaN(formData.bodyweight)) {
+      toast.error("Please enter a valid weight");
+      return false;
     }
     if (!formData.gender) {
-      toast.error("Please select a gender")
-      return false
+      toast.error("Please select your gender");
+      return false;
     }
-    if (!formData.bodyWeight || isNaN(formData.bodyWeight) || Number(formData.bodyWeight) <= 0) {
-      toast.error("Please enter a valid body weight")
-      return false
-    }
-    if (!formData.height || isNaN(formData.height) || Number(formData.height) <= 0) {
-      toast.error("Please enter a valid height")
-      return false
-    }
-    return true
-  }
+    return true;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validateForm()) {
-      await signup(formData)
+      await signup(formData);
     }
-  }
+  };
 
   return (
-    <div>
-      <div
-        className="flex items-center justify-center w-full h-screen bg-[#d8d0e3] relative"
-      >
-        <div
-          className="absolute font-extrabold text-[#f8f8f8] z-0"
-          style={{ fontSize: "20rem", lineHeight: 1 }}
+    <div className="flex items-center justify-center w-full h-screen bg-[#d8d0e3] relative">
+      {/* Background Text */}
+      <div className="absolute text-[20rem] font-extrabold text-[#f8f8f8] z-0">
+        Fit-Flow
+      </div>
+
+      {/* Sign-Up Form */}
+      <div className="flex flex-col items-center justify-center bg-[#240B42] shadow-xl w-96 h-auto rounded-md z-10">
+        <h1 className="text-3xl font-bold text-white" style={{ marginTop: "10px", marginBottom: "30px" }}>Sign Up</h1>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-2 items-center justify-center w-72 text-white"
         >
-          RSOCIAL
-        </div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Name</label>
+            <input
+              type="text"
+              placeholder="John Doe"
+              value={formData.fullName}
+              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-        <div
-          className="flex flex-col items-center justify-center bg-[#240B42] shadow-2xl w-96 rounded-md z-10"
-          style={{ height: "650px" }}
-        >
-          <h1
-            className="text-3xl font-bold text-white"
-            style={{ marginTop: "10px", marginBottom: "50px" }}
-          >
-            SignUp
-          </h1>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Email</label>
+            <input
+              type="email"
+              placeholder="johndoe@example.com"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-2 items-center justify-center w-72 text-white"
-          >
-            {/* Full Name */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                FullName
-              </label>
-              <input
-                type="text"
-                placeholder="john doe"
-                value={formData.fullName}
-                onChange={(e) =>
-                  setFormData({ ...formData, fullName: e.target.value })
-                }
-                className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
-                style={{ padding: "6px" }}
-              />
-            </div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Password</label>
+            <input
+              type="password"
+              placeholder="******"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-            {/* Email */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="johndoe@example.com"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
-                style={{ padding: "6px" }}
-              />
-            </div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Age</label>
+            <input
+              type="number"
+              placeholder="e.g. 25"
+              value={formData.age}
+              onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-            {/* Password */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="******"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-                className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
-                style={{ padding: "6px" }}
-              />
-            </div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Height (cm)</label>
+            <input
+              type="number"
+              placeholder="e.g. 170"
+              value={formData.height}
+              onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-            {/* Gender */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                Gender
-              </label>
-              <select
-                value={formData.gender}
-                onChange={(e) =>
-                  setFormData({ ...formData, gender: e.target.value })
-                }
-                className="border-2 rounded-md border-white bg-[#240B42] outline-none text-white"
-                style={{ padding: "6px" }}
-              >
-                <option value="" disabled>
-                  Select gender
-                </option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Weight (kg)</label>
+            <input
+              type="number"
+              placeholder="e.g. 70"
+              value={formData.bodyweight}
+              onChange={(e) => setFormData({ ...formData, bodyweight: e.target.value })}
+              className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
+              style={{ padding: "6px" }}
+            />
+          </div>
 
-            {/* Body Weight */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                Body Weight (kg)
-              </label>
-              <input
-                type="number"
-                placeholder="e.g. 70"
-                value={formData.bodyWeight}
-                onChange={(e) =>
-                  setFormData({ ...formData, bodyWeight: e.target.value })
-                }
-                className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
-                style={{ padding: "6px" }}
-                min="0"
-              />
-            </div>
-
-            {/* Height */}
-            <div className="flex flex-col w-full" style={{ marginBottom: "8px" }}>
-              <label
-                className="text-white font-semibold"
-                style={{ marginBottom: "4px" }}
-              >
-                Height (cm)
-              </label>
-              <input
-                type="number"
-                placeholder="e.g. 175"
-                value={formData.height}
-                onChange={(e) =>
-                  setFormData({ ...formData, height: e.target.value })
-                }
-                className="border-2 rounded-md border-white outline-none placeholder:text-gray-500"
-                style={{ padding: "6px" }}
-                min="0"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="flex items-center justify-center w-32 h-12 bg-green-700 rounded-md font-bold text-white hover:bg-green-500"
-              style={{ marginTop: "15px", marginBottom: "15px" }}
-              disabled={isSigningUp}
+          <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
+            <label className="text-white font-semibold">Gender</label>
+            <select
+              value={formData.gender}
+              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+              className="border-2 rounded-md border-white outline-none text-black"
+              style={{ padding: "6px" }}
             >
-              {isSigningUp ? (
-                <Loader className="size-10 animate-spin" />
-              ) : (
-                "Sign-up"
-              )}
-            </button>
-          </form>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
 
-          <p className="text-white">
-            Already have an account?{" "}
-            <Link to="/signIn" className="text-blue-700 hover:underline">
-              Go to SignIn
-            </Link>
-          </p>
-        </div>
+          <button
+            type="submit"
+            className="flex items-center justify-center w-32 h-12 bg-green-700 rounded-md font-bold text-white hover:bg-green-500"
+            style={{ marginTop: "15px", marginBottom: "15px", padding: "5px" }}
+          >
+            {isSigningUp ? <Loader className="size-10 animate-spin" /> : "Sign Up"}
+          </button>
+        </form>
+        <p className="text-white" style={{ marginBottom: "15px" }}>
+          Already have an account?{" "}
+          <Link to="/signIn" className="text-blue-700 hover:underline">
+            Go to SignIn
+          </Link>
+        </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignupPage
+export default SignupPage;

@@ -40,7 +40,26 @@ const userSchema = new mongoose.Schema({
 
   bmi: {
     type: Number
+  },
+
+  dailyIntake: {
+    date: {
+      type: String // use new Date().toDateString() to compare
+    },
+    calories: {
+      type: Number,
+      default: 0
+    },
+    protein: {
+      type: Number,
+      default: 0
+    },
+    carbs: {
+      type: Number,
+      default: 0
+    }
   }
+
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
